@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1"
+  />
+  <title>Hydragen Essentials ‒ TrueHydr8 Launch</title>
+
+  <style>
+    /* Reset margin/padding */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #000;
+      color: #fff;
+    }
+
+    /* 1) VIDEO BACKGROUND: fills entire viewport, keeps aspect ratio, loops */
+    .video-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .video-bg video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: auto;
+      height: 100%;
+      min-width: 100%;
+      min-height: 100%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+    }
+
+    /* 2) OVERLAY: holds logo + text, centered both horizontally & vertically */
+    .overlay {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      perspective: 1000px; /* gives 3D perspective effect for logo scaling */
+    }
+
+    /* 3) LOGO ANIMATION */
+    #logo {
+      width: 400px;          /* base width at end of animation (adjust as needed) */
+      max-width: 80vw;       /* responsive max */
+      opacity: 0;
+      transform: scale(0.2) translateZ(-500px);
+      animation: logoPop 3s ease-out forwards;
+      animation-delay: 1s;
+      /* Starts 1s after page load, then runs for 3s */
+    }
+
+    @keyframes logoPop {
+      0% {
+        opacity: 0;
+        transform: scale(0.2) translateZ(-500px);
+      }
+      40% {
+        opacity: 1;
+        transform: scale(0.6) translateZ(-300px);
+      }
+      70% {
+        transform: scale(0.9) translateZ(-100px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateZ(0);
+      }
+    }
+
+    /* 4) CINEMATIC TEXT INTRO */
+    #introText {
+      margin-top: 2rem;
+      font-size: 2rem;
+      letter-spacing: 0.1em;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: textFadeIn 3s ease-out forwards;
+      animation-delay: 5s;
+      max-width: 80vw;
+      line-height: 1.3;
+    }
+
+    @keyframes textFadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      20% {
+        opacity: 0.2;
+        transform: translateY(10px);
+      }
+      60% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 5) SUBTLE FADE OUT AFTER HOLD, OPTIONAL */
+    /* If you want the text to fade out after a few seconds: */
+    @keyframes textFadeOut {
+      0% {
+        opacity: 1;
+      }
+      80% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    /* Uncomment these styles if you’d like the text to fade out after ~10s: */
+    /*
+    #introText {
+      animation: textFadeIn 3s ease-out forwards, textFadeOut 2s ease-in forwards;
+      animation-delay: 5s, 12s;
+    }
+    */
+
+    /* 6) OPTIONAL: SKIP BUTTON (once animation ends, allow visitors to scroll) */
+    #skipBtn {
+      position: absolute;
+      bottom: 2rem;
+      right: 2rem;
+      background: rgba(0, 0, 0, 0.5);
+      border: none;
+      color: #fff;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      opacity: 0;
+      animation: fadeInSkip 1s ease-out forwards;
+      animation-delay: 8s; /* show “Skip Intro” after animations */
+    }
+
+    @keyframes fadeInSkip {
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* 7) RESPONSIVE ADJUSTMENTS */
+    @media (min-width: 1200px) {
+      #logo {
+        width: 500px;
+      }
+      #introText {
+        font-size: 2.5rem;
+      }
+    }
+    @media (max-width: 600px) {
+      #logo {
+        width: 60vw;
+      }
+      #introText {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- VIDEO BACKGROUND -->
+  <div class="video-bg">
+    <video
+      src="waterdrop.mp4"
+      type="video/mp4"
+      autoplay
+      muted
+      loop
+      playsinline
+    >
+      <!-- Optional WebM fallback:
+      <source src="waterdrop.webm" type="video/webm" />
+      -->
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <!-- OVERLAY: LOGO + TEXT -->
+  <div class="overlay">
+    <!-- 1) Logo animation -->
+    <img id="logo" src="hydr8_logo.png" alt="Hydr8 Logo" />
+
+    <!-- 2) Cinematic text (delayed) -->
+    <div id="introText">
+      Introducing…<br />
+      the latest technology in water filtration<br />
+      <strong>The new</strong> <em>TrueHydr8</em> system<br />
+      <span style="font-size:1.2em; opacity:0.8;">by Hydragen Essentials</span>
+    </div>
+
+    <!-- 3) Skip button (optional) -->
+    <button id="skipBtn" onclick="skipIntro()">Skip Intro</button>
+  </div>
+
+  <script>
+    /* Once the intro is done (e.g. after 10s), you might want to remove
+       the overlay so visitors can interact with the “real” page underneath. */
+
+    function skipIntro() {
+      document.querySelector('.overlay').style.display = 'none';
+      document.querySelector('#skipBtn').style.display = 'none';
+    }
+
+    /* If you prefer it to auto-vanish after a fixed time, you can do: */
+    // setTimeout(() => {
+    //   skipIntro();
+    // }, 12000); // 12 seconds total (logo 4s + text 3s + hold 5s)
+  </script>
+</body>
+</html>
